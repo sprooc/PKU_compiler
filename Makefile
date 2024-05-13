@@ -94,6 +94,9 @@ $(BUILD_DIR)/%.tab$(FB_EXT): $(SRC_DIR)/%.y
 	mkdir -p $(dir $@)
 	$(BISON) $(BFLAGS) -o $@ $<
 
+docker:
+	sudo docker run -it maxxing/compiler-dev git clone https://github.com/sprooc/PKU_compiler.git
+
 
 .PHONY: clean
 
