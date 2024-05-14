@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -28,6 +29,9 @@ int main(int argc, const char *argv[]) {
   // 打开输入文件, 并且指定 lexer 在解析的时候读取这个文件
   yyin = fopen(input, "r");
   assert(yyin);
+
+  std::ofstream output_file(output);
+  Output::os = std::move(output_file);
 
   // 调用 parser 函数, parser 函数会进一步调用 lexer 解析输入文件的
   unique_ptr<BaseAST> ast;
