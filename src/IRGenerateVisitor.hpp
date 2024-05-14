@@ -13,6 +13,7 @@ class IRGenerateVisitor {
  public:
   void PrintResult() {
     assert(program_ir);
+    std::cout << "HHH" << std::endl;
     program_ir->PrintIR();
   }
   void Visit(CompUnit* ast);
