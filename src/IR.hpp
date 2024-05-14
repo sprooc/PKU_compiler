@@ -10,7 +10,10 @@ class BaseIR {
   virtual void PrintIR() const;
 };
 
-class InstrIR : public BaseIR {};
+class InstrIR : public BaseIR {
+ public:
+  virtual void PrintIR() const override;
+};
 
 class RetInstrIR : public InstrIR {
  public:
@@ -40,7 +43,6 @@ class BasicBlockIR : public BaseIR {
 class FunctionIR : public BaseIR {
  public:
   std::string name;
-
   std::vector<std::unique_ptr<BasicBlockIR>> basic_blocks;
 
   void PrintIR() const override {
