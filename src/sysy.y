@@ -85,7 +85,7 @@ Stmt
   : RETURN Number ';' {
     auto ast = new Stmt();
     ast->number = unique_ptr<BaseAST>($2);
-    $$ = ast
+    $$ = ast;
   }
   ;
 
