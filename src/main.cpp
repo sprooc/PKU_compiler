@@ -33,10 +33,7 @@ int main(int argc, const char *argv[]) {
 
   out_file.open(output);
 
-  /*
-  *
-  *
-  */
+
   // 调用 parser 函数, parser 函数会进一步调用 lexer 解析输入文件的
   unique_ptr<BaseAST> ast;
   auto ret = yyparse(ast);
@@ -45,7 +42,7 @@ int main(int argc, const char *argv[]) {
   // 输出解析得到的 AST, 其实就是个字符串
   // ast->Dump();
   IRGenerateVisitor visitor;
-  BaseIR *ir = visitor.visitCompUnit((CompUnit *)ast.get());
-  ir->PrintIR();
+  visitor.Visit((CompUnit *)ast.get());
+  visitor.PrintResult();
   return 0;
 }

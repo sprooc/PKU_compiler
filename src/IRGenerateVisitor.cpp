@@ -5,32 +5,23 @@
 #include "AST.hpp"
 #include "IR.hpp"
 
-ProgramIR* IRGenerateVisitor::visitCompUnit(CompUnit* ast) {
-  ProgramIR* program_ir = new ProgramIR();
-  program_ir->functions.push_back(std::unique_ptr<FunctionIR>(
-      visitFuncDef((FuncDef*)(ast->func_def.get()))));
-  return program_ir;
-}
+void IRGenerateVisitor::Visit(CompUnit* ast) { program_ir = new ProgramIR(); }
 
-FunctionIR* IRGenerateVisitor::visitFuncDef(FuncDef* ast) {
+void IRGenerateVisitor::Visit(FuncDef* ast) {
   FunctionIR* function_ir = new FunctionIR();
   function_ir->name = ast->ident;
   curr_basic_block = new BasicBlockIR();
   curr_basic_block->name = "entry";
   function_ir->basic_blocks.push_back(
       std::unique_ptr<BasicBlockIR>(curr_basic_block));
-  visitBlock((Block*)ast->block.get());
-  return function_ir;
+  Visit((Block*)ast->block.get());
+  program_ir->functions.push_back(std::unique_ptr<FunctionIR>(function_ir));
 }
 
-BaseIR* IRGenerateVisitor::visitBlock(Block* ast) {
-  visitStmt((Stmt*)ast->stmt.get());
-  return nullptr;
-}
+void IRGenerateVisitor::Visit(Block* ast) { Visit((Stmt*)ast->stmt.get()); }
 
-BaseIR* IRGenerateVisitor::visitStmt(Stmt* ast) {
+void IRGenerateVisitor::Visit(Stmt* ast) {
   RetInstrIR* ret_it = new RetInstrIR();
   ret_it->ret_value = ((Number*)ast->number.get())->int_const;
   curr_basic_block->instrs.push_back(std::unique_ptr<InstrIR>(ret_it));
-  return nullptr;
 }

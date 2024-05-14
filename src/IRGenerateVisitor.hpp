@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <memory>
 
 #include "AST.hpp"
@@ -7,10 +8,15 @@
 class IRGenerateVisitor {
  private:
   BasicBlockIR* curr_basic_block;
+  ProgramIR* program_ir;
 
  public:
-  ProgramIR* visitCompUnit(CompUnit* ast);
-  FunctionIR* visitFuncDef(FuncDef* ast);
-  BaseIR* visitBlock(Block* ast);
-  BaseIR* visitStmt(Stmt* ast);
+  void PrintResult() {
+    assert(program_ir);
+    program_ir->PrintIR();
+  }
+  void Visit(CompUnit* ast);
+  void Visit(FuncDef* ast);
+  void Visit(Block* ast);
+  void Visit(Stmt* ast);
 };
