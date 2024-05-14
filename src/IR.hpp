@@ -12,7 +12,7 @@ class BaseIR {
 
 class InstrIR : public BaseIR {
  public:
-  virtual void PrintIR() const override;
+  void PrintIR() const override {};
 };
 
 class RetInstrIR : public InstrIR {
