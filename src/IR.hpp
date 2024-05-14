@@ -51,22 +51,22 @@ typedef enum {
   IRT_FUNCTION,
 } TypeTag;
 
-typedef struct Type {
-  TypeTag tag;
-  union {
-    struct {
-      std::unique_ptr<struct Type> elem_type;
-      size_t len;
-    } array;
-    struct {
-      std::unique_ptr<struct Type> elem_type;
-    } pointer;
-    struct {
-      std::unique_ptr<struct Type> ret_type;
-      std::vector<std::unique_ptr<struct Type>> params;
-    } function;
-  } type;
-} Type;
+// typedef struct Type {
+//   TypeTag tag;
+//   union {
+//     struct {
+//       std::unique_ptr<struct Type> elem_type;
+//       size_t len;
+//     } array;
+//     struct {
+//       std::unique_ptr<struct Type> elem_type;
+//     } pointer;
+//     struct {
+//       std::unique_ptr<struct Type> ret_type;
+//       std::vector<std::unique_ptr<struct Type>> params;
+//     } function;
+//   } type;
+// } Type;
 
 class FunctionIR : public BaseIR {
  public:
