@@ -108,3 +108,7 @@ git:
 	git commit -m "git-commit by makefile"
 	git push
 -include $(DEPS)
+
+LV = 0
+autotest:
+	autotest -koopa -s lv1$(LV) .
