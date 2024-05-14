@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <fstream>
 
 extern std::ofstream out_file;
 
