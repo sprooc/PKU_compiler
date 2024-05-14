@@ -74,7 +74,7 @@ class FunctionIR : public BaseIR {
   // ~FunctionIR() override = default;
   // std::unique_ptr<Type> ret_type;
   std::string name;
-  std::vector<std::unique_ptr<struct Type>> params;
+  // std::vector<std::unique_ptr<struct Type>> params;
   std::vector<std::unique_ptr<BasicBlockIR>> basic_blocks;
 
   void PrintIR() const override {
