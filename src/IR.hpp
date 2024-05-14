@@ -46,7 +46,7 @@ class FunctionIR : public BaseIR {
   std::vector<std::unique_ptr<BasicBlockIR>> basic_blocks;
 
   void PrintIR() const override {
-    std::cout << "func @" << name << "(): i32 {" << std::endl;
+    std::cout << "fun @" << name << "(): i32 {" << std::endl;
     for (auto& basic_block : basic_blocks) {
       basic_block->PrintIR();
     }
