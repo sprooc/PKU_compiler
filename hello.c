@@ -1,4 +1,4 @@
-int comment() {
+int main() {
   // hhh
   return 3;
 }
