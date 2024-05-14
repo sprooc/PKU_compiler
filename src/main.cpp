@@ -5,6 +5,7 @@
 #include <string>
 
 #include "AST.hpp"
+#include "IRGenerateVisitor.hpp"
 
 using namespace std;
 
@@ -34,6 +35,9 @@ int main(int argc, const char *argv[]) {
   assert(!ret);
 
   // 输出解析得到的 AST, 其实就是个字符串
-  ast->Dump();
+  // ast->Dump();
+  IRGenerateVisitor visitor;
+  BaseIR *ir = visitor.visitCompUnit((CompUnit *)ast.get());
+  ir->PrintIR();
   return 0;
 }
