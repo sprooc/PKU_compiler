@@ -1,9 +1,11 @@
 #pragma once
-#include "Output.hpp"
+
 #include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
+
+extern std::ofstream out_file;
 
 class BaseIR {
  public:
@@ -21,8 +23,8 @@ class RetInstrIR : public InstrIR {
   int ret_value;
 
   void PrintIR() const override {
-    Output::os << "ret ";
-    Output::os << ret_value;
+    out_file << "ret ";
+    out_file << ret_value;
   }
 };
 
@@ -32,11 +34,11 @@ class BasicBlockIR : public BaseIR {
   std::vector<std::unique_ptr<InstrIR>> instrs;
 
   void PrintIR() const override {
-    Output::os << "%" << name << ":" << std::endl;
+    out_file << "%" << name << ":" << std::endl;
     for (auto& instr : instrs) {
-      Output::os << "  ";
+      out_file << "  ";
       instr->PrintIR();
-      Output::os << std::endl;
+      out_file << std::endl;
     }
   }
 };
@@ -47,11 +49,11 @@ class FunctionIR : public BaseIR {
   std::vector<std::unique_ptr<BasicBlockIR>> basic_blocks;
 
   void PrintIR() const override {
-    Output::os << "func @" << name << "(): i32 {" << std::endl;
+    out_file << "func @" << name << "(): i32 {" << std::endl;
     for (auto& basic_block : basic_blocks) {
       basic_block->PrintIR();
     }
-    Output::os << "}" << std::endl;
+    out_file << "}" << std::endl;
   }
 };
 
