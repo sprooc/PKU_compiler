@@ -70,6 +70,7 @@ typedef struct Type {
 
 class FunctionIR : public BaseIR {
  public:
+  ~FunctionIR() override = default;
   std::unique_ptr<Type> ret_type;
   std::string name;
   std::vector<std::unique_ptr<struct Type>> params;
