@@ -16,6 +16,7 @@ FunctionIR* IRGenerateVisitor::visitFuncDef(FuncDef* ast) {
   FunctionIR* function_ir = new FunctionIR();
   function_ir->name = ast->ident;
   curr_basic_block = new BasicBlockIR();
+  curr_basic_block->name = "entry";
   function_ir->basic_blocks.push_back(
       std::unique_ptr<BasicBlockIR>(curr_basic_block));
   visitBlock((Block*)ast->block.get());
