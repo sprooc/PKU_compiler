@@ -1,5 +1,5 @@
+#pragma once
 #include <fstream>
-#include <iostream>
 
 class Output {
  public:
