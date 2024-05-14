@@ -111,4 +111,4 @@ git:
 
 LV = 0
 autotest:
-	autotest -koopa -s lv1$(LV) .
+	autotest -koopa -s lv$(LV) .
