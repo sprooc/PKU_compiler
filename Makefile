@@ -95,7 +95,7 @@ $(BUILD_DIR)/%.tab$(FB_EXT): $(SRC_DIR)/%.y
 	$(BISON) $(BFLAGS) -o $@ $<
 
 docker:
-	sudo docker run -it maxxing/compiler-dev git clone https://github.com/sprooc/PKU_compiler.git
+	sudo docker exec -it a226925f0224 bash
 
 
 .PHONY: clean
@@ -103,4 +103,8 @@ docker:
 clean:
 	-rm -rf $(BUILD_DIR)
 
+git:
+	git add .
+	git commit -m "git-commit by makefile"
+	git push
 -include $(DEPS)
