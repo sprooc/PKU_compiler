@@ -7,7 +7,7 @@
 class BaseIR {
  public:
   virtual ~BaseIR() = default;
-  virtual void PrintIR() const;
+  virtual void PrintIR() const {};
 };
 
 class InstrIR : public BaseIR {
