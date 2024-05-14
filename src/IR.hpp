@@ -70,6 +70,7 @@ typedef struct Type {
 
 class FunctionIR : public BaseIR {
  public:
+  FunctionIR& operator=(FunctionIR&&) = default;
   ~FunctionIR() override = default;
   std::unique_ptr<Type> ret_type;
   std::string name;
