@@ -5,7 +5,10 @@
 #include "AST.hpp"
 #include "IR.hpp"
 
-void IRGenerateVisitor::Visit(CompUnit* ast) { program_ir = new ProgramIR(); }
+void IRGenerateVisitor::Visit(CompUnit* ast) {
+  program_ir = new ProgramIR();
+  Visit((FuncDef*)ast->func_def.get());
+}
 
 void IRGenerateVisitor::Visit(FuncDef* ast) {
   FunctionIR* function_ir = new FunctionIR();
