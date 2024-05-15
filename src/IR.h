@@ -70,19 +70,19 @@ class Type {
 
 class ArrayType : public Type {
  public:
-  std::unique_ptr<struct Type> elem_type;
+  std::unique_ptr<Type> elem_type;
   size_t len;
 };
 
 class PointerType : public Type {
  public:
-  std::unique_ptr<struct Type> elem_type;
+  std::unique_ptr<Type> elem_type;
 };
 
 class FunctionType : public Type {
  public:
-  std::unique_ptr<struct Type> ret_type;
-  std::vector<std::unique_ptr<struct Type>> params;
+  std::unique_ptr<Type> ret_type;
+  std::vector<std::unique_ptr<Type>> params;
 };
 /*----------------- Type end -------------------------*/
 
