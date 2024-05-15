@@ -15,6 +15,7 @@ class IRGenerateVisitor {
     assert(program_ir);
     program_ir->PrintIR();
   }
+  ProgramIR* GetProgramIR() { return program_ir; }
   ValueIR* Visit(CompUnit* ast);
   ValueIR* Visit(FuncDef* ast);
   ValueIR* Visit(Block* ast);
