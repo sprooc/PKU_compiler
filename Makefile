@@ -112,7 +112,7 @@ git:
 LV = 0
 MODE = 
 autotest:
-	autotest -koopa -${MODE} -s lv$(LV) .
+	autotest -${MODE} -s lv$(LV) .
 
 localtest:
 	build/compiler -p hello.c -o hello
