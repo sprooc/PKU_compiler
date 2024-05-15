@@ -5,8 +5,8 @@
 #include <memory>
 #include <string>
 
-#include "AST.hpp"
-#include "IRGenerateVisitor.hpp"
+#include "AST.h"
+#include "IRGenVisitor.h"
 
 using namespace std;
 

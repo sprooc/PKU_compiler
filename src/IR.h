@@ -14,36 +14,48 @@ class BaseIR {
   virtual void PrintIR() const {};
 };
 
-class InstrIR : public BaseIR {
+typedef enum {
+  IRV_RETURN,
+  IRV_INTEGER,
+} ValueTag;
+
+class ValueIR : public BaseIR {
  public:
+  ValueTag tag;
   void PrintIR() const override {};
 };
 
-class RetInstrIR : public InstrIR {
+class IntegerValueIR : public ValueIR {
  public:
-  int ret_value;
+  int number;
+  void PrintIR() const override { out_file << number; }
+};
 
+class ReturnValueIR : public ValueIR {
+ public:
+  std::unique_ptr<ValueIR> ret_value;
   void PrintIR() const override {
     out_file << "ret ";
-    out_file << ret_value;
+    ret_value->PrintIR();
   }
 };
 
 class BasicBlockIR : public BaseIR {
  public:
   std::string name;
-  std::vector<std::unique_ptr<InstrIR>> instrs;
+  std::vector<std::unique_ptr<ValueIR>> values;
 
   void PrintIR() const override {
     out_file << "%" << name << ":" << std::endl;
-    for (auto& instr : instrs) {
+    for (auto& value : values) {
       out_file << "  ";
-      instr->PrintIR();
+      value->PrintIR();
       out_file << std::endl;
     }
   }
 };
 
+/*-------------- Type --------------------*/
 typedef enum {
   IRT_INT32,
   IRT_ARRAY,
@@ -51,22 +63,28 @@ typedef enum {
   IRT_FUNCTION,
 } TypeTag;
 
-// typedef struct Type {
-//   TypeTag tag;
-//   union {
-//     struct {
-//       std::unique_ptr<struct Type> elem_type;
-//       size_t len;
-//     } array;
-//     struct {
-//       std::unique_ptr<struct Type> elem_type;
-//     } pointer;
-//     struct {
-//       std::unique_ptr<struct Type> ret_type;
-//       std::vector<std::unique_ptr<struct Type>> params;
-//     } function;
-//   } type;
-// } Type;
+class Type {
+ public:
+  TypeTag tag;
+};
+
+class ArrayType : public Type {
+ public:
+  std::unique_ptr<struct Type> elem_type;
+  size_t len;
+};
+
+class PointerType : public Type {
+ public:
+  std::unique_ptr<struct Type> elem_type;
+};
+
+class FunctionType : public Type {
+ public:
+  std::unique_ptr<struct Type> ret_type;
+  std::vector<std::unique_ptr<struct Type>> params;
+};
+/*----------------- Type end -------------------------*/
 
 class FunctionIR : public BaseIR {
  public:

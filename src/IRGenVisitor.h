@@ -2,8 +2,8 @@
 #include <cassert>
 #include <memory>
 
-#include "AST.hpp"
-#include "IR.hpp"
+#include "AST.h"
+#include "IR.h"
 
 class IRGenerateVisitor {
  private:
@@ -15,8 +15,9 @@ class IRGenerateVisitor {
     assert(program_ir);
     program_ir->PrintIR();
   }
-  void Visit(CompUnit* ast);
-  void Visit(FuncDef* ast);
-  void Visit(Block* ast);
-  void Visit(Stmt* ast);
+  ValueIR* Visit(CompUnit* ast);
+  ValueIR* Visit(FuncDef* ast);
+  ValueIR* Visit(Block* ast);
+  ValueIR* Visit(Stmt* ast);
+  ValueIR* Visit(Number* ast);
 };
