@@ -3,6 +3,7 @@
   "gotoSymbolStack.maxStackPosition": 0,
   "gotoSymbolStack.filePositionInfo": [],
   "files.associations": {
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "string": "cpp"
   }
 }

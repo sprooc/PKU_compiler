@@ -4,10 +4,10 @@
 #include <iostream>
 #include <memory>
 #include <string>
-
+#in
 #include "AST.h"
-#include "IRGenVisitor.h"
 #include "CodeGenVisitor.h"
+#include "IRGenVisitor.h"
 
 using namespace std;
 
@@ -18,6 +18,9 @@ using namespace std;
 // 看起来会很烦人, 于是干脆采用这种看起来 dirty 但实际很有效的手段
 extern FILE *yyin;
 extern int yyparse(unique_ptr<BaseAST> &ast);
+
+const char* koopa_mode = "-koopa";
+const char* riscv_mod = "-riscv";
 
 std::ofstream out_file;
 int main(int argc, const char *argv[]) {
@@ -43,8 +46,13 @@ int main(int argc, const char *argv[]) {
   // ast->Dump();
   IRGenerateVisitor IR_visitor;
   IR_visitor.Visit((CompUnit *)ast.get());
-  // visitor.PrintResult();
-  CodeGenVisitor cg_visitor;
-  cg_visitor.Visit(IR_visitor.GetProgramIR());
+  
+  std::string mode_str = std::string(mode);
+  if (mode_str == "-koopa") {
+    IR_visitor.PrintResult();
+  } else if (mode_str == "-riscv") {
+    CodeGenVisitor cg_visitor;
+    cg_visitor.Visit(IR_visitor.GetProgramIR());
+  }
   return 0;
 }

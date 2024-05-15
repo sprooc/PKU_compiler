@@ -110,8 +110,9 @@ git:
 -include $(DEPS)
 
 LV = 0
+MODE = 
 autotest:
-	autotest -koopa -s lv$(LV) .
+	autotest -koopa -${MODE} -s lv$(LV) .
 
 localtest:
 	build/compiler -p hello.c -o hello
