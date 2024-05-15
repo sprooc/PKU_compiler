@@ -53,14 +53,40 @@ class Block : public BaseAST {
 
 class Stmt : public BaseAST {
  public:
-  std::unique_ptr<BaseAST> number;
+  std::unique_ptr<BaseAST> exp;
 
   void Dump() const override {
     std::cout << "Stmt { ";
     std::cout << "RETURN, ";
-    number->Dump();
+    exp->Dump();
     std::cout <<", ;}";
   }
+};
+
+class Exp : public BaseAST {
+  public:
+    std::unique_ptr<BaseAST> unary_exp;
+
+};
+
+class PrimaryExp : public BaseAST{
+  public:
+    std::unique_ptr<BaseAST> exp;
+    std::unique_ptr<BaseAST> number;
+
+};
+
+class UnaryExp :public BaseAST {
+  public:
+    std::unique_ptr<BaseAST> primary_exp;
+    std::unique_ptr<BaseAST> unary_op;
+    std::unique_ptr<BaseAST> unary_exp;
+
+};
+
+class UnaryOp : public BaseAST {
+  public:
+    std::string op;
 };
 
 class Number : public BaseAST {

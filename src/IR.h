@@ -17,26 +17,93 @@ class BaseIR {
 typedef enum {
   IRV_RETURN,
   IRV_INTEGER,
+  IRV_CONSTANT,
+  IRV_INSTR,
+  IRV_BOP,
 } ValueTag;
+
+typedef enum {
+  OP_ADD,
+  OP_SUB,
+  OP_EQU,
+} OpType;
 
 class ValueIR : public BaseIR {
  public:
+  ValueIR(ValueTag t) : tag(t){};
   ValueTag tag;
   void PrintIR() const override {};
+  virtual void PrintName() const {};
 };
 
-class IntegerValueIR : public ValueIR {
+class ConstantIR : public ValueIR {
  public:
+  ConstantIR() : ValueIR(ValueTag::IRV_CONSTANT){};
+  void PrintIR() const override {};
+  void PrintName() const override {};
+};
+
+class InstrIR : public ValueIR {
+ public:
+  InstrIR() : ValueIR(ValueTag::IRV_INSTR){};
+  void PrintIR() const override {};
+  void PrintName() const override {};
+};
+
+class IntegerValueIR : public ConstantIR {
+ public:
+  IntegerValueIR() { this->tag = IRV_INTEGER; }
   int number;
   void PrintIR() const override { out_file << number; }
+  void PrintName() const override { out_file << number; };
 };
 
-class ReturnValueIR : public ValueIR {
+class BinaryOpInstrIR : public InstrIR {
  public:
+  BinaryOpInstrIR() { this->tag = ValueTag::IRV_BOP; }
+  std::string name;
+  OpType op_type;
+  std::unique_ptr<ValueIR> left;
+  std::unique_ptr<ValueIR> right;
+  void PrintName() const override { out_file << name; }
+  void PrintIR() const override {
+    out_file << name << " = ";
+    switch (op_type) {
+      case OpType::OP_ADD:
+        out_file << name << " = add ";
+        left->PrintName();
+        out_file << ", ";
+        right->PrintName();
+        break;
+      case OpType::OP_SUB:
+        out_file << name << " = sub ";
+        left->PrintName();
+        out_file << ", ";
+        right->PrintName();
+        break;
+      case OpType::OP_EQU:
+        out_file << name << " = equ ";
+        left->PrintName();
+        out_file << ", ";
+        right->PrintName();
+        break;
+      default:
+        break;
+    }
+  };
+};
+
+class ReturnValueIR : public InstrIR {
+ public:
+  ReturnValueIR() { this->tag = ValueTag::IRV_RETURN; }
   std::unique_ptr<ValueIR> ret_value;
   void PrintIR() const override {
     out_file << "ret ";
-    ret_value->PrintIR();
+    if (ret_value->tag == IRV_INTEGER) {
+      ret_value->PrintIR();
+    } else {
+      out_file << ((BinaryOpInstrIR*)ret_value.get())->name;
+    }
   }
 };
 
