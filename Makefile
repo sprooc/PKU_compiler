@@ -112,3 +112,6 @@ git:
 LV = 0
 autotest:
 	autotest -koopa -s lv$(LV) .
+
+localtest:
+	build/compiler -p hello.c -o hello
