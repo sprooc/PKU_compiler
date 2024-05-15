@@ -59,41 +59,78 @@ class Stmt : public BaseAST {
     std::cout << "Stmt { ";
     std::cout << "RETURN, ";
     exp->Dump();
-    std::cout <<", ;}";
+    std::cout << ", ;}";
   }
 };
 
 class Exp : public BaseAST {
-  public:
-    std::unique_ptr<BaseAST> unary_exp;
-
+ public:
+  std::unique_ptr<BaseAST> lor_exp;
 };
 
-class PrimaryExp : public BaseAST{
-  public:
-    std::unique_ptr<BaseAST> exp;
-    std::unique_ptr<BaseAST> number;
-
+class MulExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> unary_exp;
+  std::unique_ptr<BaseAST> mul_exp;
+  std::string op;
 };
 
-class UnaryExp :public BaseAST {
-  public:
-    std::unique_ptr<BaseAST> primary_exp;
-    std::unique_ptr<BaseAST> unary_op;
-    std::unique_ptr<BaseAST> unary_exp;
+class AddExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> mul_exp;
+  std::unique_ptr<BaseAST> add_exp;
+  std::string op;
+};
 
+class PrimaryExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> exp;
+  std::unique_ptr<BaseAST> number;
+};
+
+class UnaryExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> primary_exp;
+  std::unique_ptr<BaseAST> unary_op;
+  std::unique_ptr<BaseAST> unary_exp;
 };
 
 class UnaryOp : public BaseAST {
-  public:
-    std::string op;
+ public:
+  std::string op;
 };
 
 class Number : public BaseAST {
  public:
   int int_const;
 
-  void Dump() const override {
-    std::cout << "Number { " << int_const << " }";
-  }
+  void Dump() const override { std::cout << "Number { " << int_const << " }"; }
+};
+
+class RelExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> add_exp;
+  std::unique_ptr<BaseAST> rel_exp;
+  std::string op;
+};
+
+class EqExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> rel_exp;
+  std::unique_ptr<BaseAST> eq_exp;
+  std::string op;
+};
+
+class LAndExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> eq_exp;
+  std::unique_ptr<BaseAST> land_exp;
+  std::string op;
+};
+
+class LOrExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> land_exp;
+  std::unique_ptr<BaseAST> lor_exp;
+  std::string op;
 };

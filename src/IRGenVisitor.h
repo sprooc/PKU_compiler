@@ -1,5 +1,6 @@
 #pragma once
 #include <cassert>
+#include <cstdarg>
 #include <memory>
 
 #include "AST.h"
@@ -10,9 +11,7 @@ class IRGenerateVisitor {
   BasicBlockIR* curr_basic_block;
   ProgramIR* program_ir;
   int tmp = 0;
-  std::string GetTmp() {
-    return "%" + std::to_string(tmp++);
-  }
+  std::string GetTmp() { return "%" + std::to_string(tmp++); }
 
  public:
   void PrintResult() {
@@ -29,4 +28,10 @@ class IRGenerateVisitor {
   ValueIR* Visit(PrimaryExp* ast);
   ValueIR* Visit(UnaryExp* ast);
   ValueIR* Visit(UnaryOp* ast);
+  ValueIR* Visit(AddExp* ast);
+  ValueIR* Visit(MulExp* ast);
+  ValueIR* Visit(RelExp* ast);
+  ValueIR* Visit(EqExp* ast);
+  ValueIR* Visit(LAndExp* ast);
+  ValueIR* Visit(LOrExp* ast);
 };

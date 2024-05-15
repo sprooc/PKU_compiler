@@ -1,4 +1,3 @@
 int main() {
-  /* hhh */
-  return 3;
+  return 2 && 4;
 }

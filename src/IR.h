@@ -26,12 +26,23 @@ typedef enum {
   OP_ADD,
   OP_SUB,
   OP_EQU,
+  OP_MUL,
+  OP_DIV,
+  OP_MOD,
+  OP_LE,
+  OP_GE,
+  OP_LT,
+  OP_GT,
+  OP_AND,
+  OP_OR,
+  OP_NEQ,
 } OpType;
 
 class ValueIR : public BaseIR {
  public:
   ValueIR(ValueTag t) : tag(t){};
   ValueTag tag;
+  int reg;
   void PrintIR() const override {};
   virtual void PrintName() const {};
 };
@@ -67,29 +78,52 @@ class BinaryOpInstrIR : public InstrIR {
   std::unique_ptr<ValueIR> right;
   void PrintName() const override { out_file << name; }
   void PrintIR() const override {
-    out_file << name << " = ";
     switch (op_type) {
       case OpType::OP_ADD:
         out_file << name << " = add ";
-        left->PrintName();
-        out_file << ", ";
-        right->PrintName();
         break;
       case OpType::OP_SUB:
         out_file << name << " = sub ";
-        left->PrintName();
-        out_file << ", ";
-        right->PrintName();
         break;
       case OpType::OP_EQU:
-        out_file << name << " = equ ";
-        left->PrintName();
-        out_file << ", ";
-        right->PrintName();
+        out_file << name << " = eq ";
+        break;
+      case OpType::OP_MUL:
+        out_file << name << " = mul ";
+        break;
+      case OpType::OP_DIV:
+        out_file << name << " = div ";
+        break;
+      case OpType::OP_MOD:
+        out_file << name << " = mod ";
+        break;
+      case OpType::OP_LT:
+        out_file << name << " = lt ";
+        break;
+      case OpType::OP_GT:
+        out_file << name << " = gt ";
+        break;
+      case OpType::OP_LE:
+        out_file << name << " = le ";
+        break;
+      case OpType::OP_GE:
+        out_file << name << " = ge ";
+        break;
+      case OpType::OP_NEQ:
+        out_file << name << " = ne ";
+        break;
+      case OpType::OP_OR:
+        out_file << name << " = or ";
+        break;
+      case OpType::OP_AND:
+        out_file << name << " = and ";
         break;
       default:
         break;
     }
+    left->PrintName();
+    out_file << ", ";
+    right->PrintName();
   };
 };
 

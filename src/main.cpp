@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+
 #include "AST.h"
 #include "CodeGenVisitor.h"
 #include "IRGenVisitor.h"
@@ -18,8 +19,8 @@ using namespace std;
 extern FILE *yyin;
 extern int yyparse(unique_ptr<BaseAST> &ast);
 
-const char* koopa_mode = "-koopa";
-const char* riscv_mod = "-riscv";
+const char *koopa_mode = "-koopa";
+const char *riscv_mod = "-riscv";
 
 std::ofstream out_file;
 int main(int argc, const char *argv[]) {
@@ -29,12 +30,17 @@ int main(int argc, const char *argv[]) {
   auto mode = argv[1];
   auto input = argv[2];
   auto output = argv[4];
-
+  out_file.open(output);
+  
+  // std::ifstream file(input);
+  // std::string line;
+  // int i = 0;
+  // while (std::getline(file, line)) {
+  //   if (i++ == 1) out_file << line << std::endl;  // 输出每一行到标准输出
+  // }
   // 打开输入文件, 并且指定 lexer 在解析的时候读取这个文件
   yyin = fopen(input, "r");
   assert(yyin);
-
-  out_file.open(output);
 
   // 调用 parser 函数, parser 函数会进一步调用 lexer 解析输入文件的
   unique_ptr<BaseAST> ast;
@@ -45,7 +51,7 @@ int main(int argc, const char *argv[]) {
   // ast->Dump();
   IRGenerateVisitor IR_visitor;
   IR_visitor.Visit((CompUnit *)ast.get());
-  
+
   std::string mode_str = std::string(mode);
   if (mode_str == "-koopa") {
     IR_visitor.PrintResult();

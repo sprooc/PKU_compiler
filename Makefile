@@ -97,6 +97,8 @@ $(BUILD_DIR)/%.tab$(FB_EXT): $(SRC_DIR)/%.y
 docker:
 	sudo docker exec -it a226925f0224 bash
 
+copy:
+	sudo docker cp ./ a226925f0224:/root/PKU_compiler/
 
 .PHONY: clean
 
@@ -116,3 +118,8 @@ autotest:
 
 localtest:
 	build/compiler -p hello.c -o hello
+
+riscv:
+	clang hello.S -c -o hello.o -target riscv32-unknown-linux-elf -march=rv32im -mabi=ilp32
+	ld.lld hello.o -o hello
+	qemu-riscv32-static hello
