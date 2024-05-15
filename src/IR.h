@@ -74,8 +74,8 @@ class BinaryOpInstrIR : public InstrIR {
   BinaryOpInstrIR() { this->tag = ValueTag::IRV_BOP; }
   std::string name;
   OpType op_type;
-  std::unique_ptr<ValueIR> left;
-  std::unique_ptr<ValueIR> right;
+  ValueIR* left;
+  ValueIR* right;
   void PrintName() const override { out_file << name; }
   void PrintIR() const override {
     switch (op_type) {
@@ -130,13 +130,13 @@ class BinaryOpInstrIR : public InstrIR {
 class ReturnValueIR : public InstrIR {
  public:
   ReturnValueIR() { this->tag = ValueTag::IRV_RETURN; }
-  std::unique_ptr<ValueIR> ret_value;
+  ValueIR* ret_value;
   void PrintIR() const override {
     out_file << "ret ";
     if (ret_value->tag == IRV_INTEGER) {
       ret_value->PrintIR();
     } else {
-      out_file << ((BinaryOpInstrIR*)ret_value.get())->name;
+      out_file << ((BinaryOpInstrIR*)ret_value)->name;
     }
   }
 };
@@ -149,6 +149,9 @@ class BasicBlockIR : public BaseIR {
   void PrintIR() const override {
     out_file << "%" << name << ":" << std::endl;
     for (auto& value : values) {
+      if (value->tag == IRV_INTEGER) {
+        continue;
+      }
       out_file << "  ";
       value->PrintIR();
       out_file << std::endl;

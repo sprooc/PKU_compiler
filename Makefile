@@ -94,6 +94,9 @@ $(BUILD_DIR)/%.tab$(FB_EXT): $(SRC_DIR)/%.y
 	mkdir -p $(dir $@)
 	$(BISON) $(BFLAGS) -o $@ $<
 
+start:
+	sudo docker start a226925f0224
+	
 docker:
 	sudo docker exec -it a226925f0224 bash
 

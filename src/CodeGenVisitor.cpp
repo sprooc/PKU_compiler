@@ -42,9 +42,9 @@ void CodeGenVisitor::Visit(ValueIR* value) {
 void CodeGenVisitor::Visit(ReturnValueIR* return_value) {
   if (return_value->ret_value->tag == IRV_INTEGER) {
     OutCode(new std::string("li"), new std::string("a0"),
-            ((IntegerValueIR*)return_value->ret_value.get())->number);
+            ((IntegerValueIR*)return_value->ret_value)->number);
   } else {
-    int reg = ((ValueIR*)(return_value->ret_value.get()))->reg;
+    int reg = ((ValueIR*)(return_value->ret_value))->reg;
     // leak
     OutCode(new std::string("mv"), new std::string("a0"),
             reg_alloc.GetName(reg));
@@ -63,10 +63,10 @@ void CodeGenVisitor::Visit(IntegerValueIR* integer_value) {
 }
 void CodeGenVisitor::Visit(BinaryOpInstrIR* binary_op_instr) {
   if (binary_op_instr->left->tag == IRV_INTEGER) {
-    Visit((IntegerValueIR*)binary_op_instr->left.get());
+    Visit((IntegerValueIR*)binary_op_instr->left);
   }
   if (binary_op_instr->right->tag == IRV_INTEGER) {
-    Visit((IntegerValueIR*)binary_op_instr->right.get());
+    Visit((IntegerValueIR*)binary_op_instr->right);
   }
   int lr = binary_op_instr->left->reg;
   int rr = binary_op_instr->right->reg;

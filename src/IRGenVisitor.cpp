@@ -30,7 +30,7 @@ ValueIR* IRGenerateVisitor::Visit(Block* ast) {
 
 ValueIR* IRGenerateVisitor::Visit(Stmt* ast) {
   ReturnValueIR* ret_ir = new ReturnValueIR();
-  ret_ir->ret_value = std::unique_ptr<ValueIR>(Visit((Exp*)ast->exp.get()));
+  ret_ir->ret_value = Visit((Exp*)ast->exp.get());
   curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(ret_ir));
   return nullptr;
 }
@@ -38,6 +38,9 @@ ValueIR* IRGenerateVisitor::Visit(Stmt* ast) {
 ValueIR* IRGenerateVisitor::Visit(Number* ast) {
   IntegerValueIR* integer_value = new IntegerValueIR();
   integer_value->number = ast->int_const;
+  // when output, it should be emit; but to avoid memory leak, it should be
+  // owned to block
+  curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(integer_value));
   return integer_value;
 }
 
@@ -62,25 +65,21 @@ ValueIR* IRGenerateVisitor::Visit(UnaryExp* ast) {
     if (op == "+") {
       return Visit((UnaryExp*)ast->unary_exp.get());
     }
+    auto zero = new IntegerValueIR();
+    zero->number = 0;
+    curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(zero));
     if (op == "-") {
       BinaryOpInstrIR* binstr = new BinaryOpInstrIR();
       binstr->op_type = OP_SUB;
-      auto zero = new IntegerValueIR();
-      zero->number = 0;
-      binstr->left = std::unique_ptr<ValueIR>(zero);
-      binstr->right =
-          std::unique_ptr<ValueIR>(Visit((UnaryExp*)ast->unary_exp.get()));
+      binstr->left = zero;
+      binstr->right = Visit((UnaryExp*)ast->unary_exp.get());
       binstr->name = GetTmp();
       curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(binstr));
       return binstr;
     } else if (op == "!") {
       BinaryOpInstrIR* equ_ir = new BinaryOpInstrIR();
-      auto zero = new IntegerValueIR();
-      zero->number = 0;
-
-      equ_ir->left = std::unique_ptr<ValueIR>(zero);
-      equ_ir->right =
-          std::unique_ptr<ValueIR>(Visit((UnaryExp*)ast->unary_exp.get()));
+      equ_ir->left = zero;
+      equ_ir->right = Visit((UnaryExp*)ast->unary_exp.get());
       equ_ir->name = GetTmp();
       equ_ir->op_type = OP_EQU;
       curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(equ_ir));
@@ -107,9 +106,8 @@ ValueIR* IRGenerateVisitor::Visit(AddExp* ast) {
         break;
     }
 
-    add_ir->left = std::unique_ptr<ValueIR>(Visit((AddExp*)ast->add_exp.get()));
-    add_ir->right =
-        std::unique_ptr<ValueIR>(Visit((MulExp*)ast->mul_exp.get()));
+    add_ir->left = Visit((AddExp*)ast->add_exp.get());
+    add_ir->right = Visit((MulExp*)ast->mul_exp.get());
     add_ir->name = GetTmp();
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(add_ir));
     return add_ir;
@@ -135,9 +133,8 @@ ValueIR* IRGenerateVisitor::Visit(MulExp* ast) {
         assert(0);
         break;
     }
-    mul_ir->left = std::unique_ptr<ValueIR>(Visit((MulExp*)ast->mul_exp.get()));
-    mul_ir->right =
-        std::unique_ptr<ValueIR>(Visit((UnaryExp*)ast->unary_exp.get()));
+    mul_ir->left = Visit((MulExp*)ast->mul_exp.get());
+    mul_ir->right = Visit((UnaryExp*)ast->unary_exp.get());
     mul_ir->name = GetTmp();
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(mul_ir));
     return mul_ir;
@@ -158,9 +155,8 @@ ValueIR* IRGenerateVisitor::Visit(RelExp* ast) {
     } else if (ast->op == "<=") {
       rel_ir->op_type = OP_LE;
     }
-    rel_ir->left = std::unique_ptr<ValueIR>(Visit((RelExp*)ast->rel_exp.get()));
-    rel_ir->right =
-        std::unique_ptr<ValueIR>(Visit((AddExp*)ast->add_exp.get()));
+    rel_ir->left = Visit((RelExp*)ast->rel_exp.get());
+    rel_ir->right = Visit((AddExp*)ast->add_exp.get());
     rel_ir->name = GetTmp();
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(rel_ir));
     return rel_ir;
@@ -176,8 +172,8 @@ ValueIR* IRGenerateVisitor::Visit(EqExp* ast) {
     } else if (ast->op == "!=") {
       eq_ir->op_type = OP_NEQ;
     }
-    eq_ir->left = std::unique_ptr<ValueIR>(Visit((EqExp*)ast->eq_exp.get()));
-    eq_ir->right = std::unique_ptr<ValueIR>(Visit((RelExp*)ast->rel_exp.get()));
+    eq_ir->left = Visit((EqExp*)ast->eq_exp.get());
+    eq_ir->right = Visit((RelExp*)ast->rel_exp.get());
     eq_ir->name = GetTmp();
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(eq_ir));
     return eq_ir;
@@ -187,29 +183,27 @@ ValueIR* IRGenerateVisitor::Visit(EqExp* ast) {
 }
 ValueIR* IRGenerateVisitor::Visit(LAndExp* ast) {
   if (ast->land_exp) {
+    auto zero = new IntegerValueIR();
+    zero->number = 0;
+    curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(zero));
     BinaryOpInstrIR* ne_ir1 = new BinaryOpInstrIR();
-    auto zero1 = new IntegerValueIR();
-    zero1->number = 0;
-    ne_ir1->left = std::unique_ptr<ValueIR>(zero1);
-    ne_ir1->right = std::unique_ptr<ValueIR>(Visit((EqExp*)ast->eq_exp.get()));
+    ne_ir1->left = zero;
+    ne_ir1->right = Visit((EqExp*)ast->eq_exp.get());
     ne_ir1->name = GetTmp();
     ne_ir1->op_type = OP_NEQ;
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(ne_ir1));
 
     BinaryOpInstrIR* ne_ir2 = new BinaryOpInstrIR();
-    auto zero2 = new IntegerValueIR();
-    zero2->number = 0;
-    ne_ir2->left = std::unique_ptr<ValueIR>(zero2);
-    ne_ir2->right =
-        std::unique_ptr<ValueIR>(Visit((LAndExp*)ast->land_exp.get()));
+    ne_ir2->left = zero;
+    ne_ir2->right = Visit((LAndExp*)ast->land_exp.get());
     ne_ir2->name = GetTmp();
     ne_ir2->op_type = OP_NEQ;
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(ne_ir2));
 
     BinaryOpInstrIR* land_ir = new BinaryOpInstrIR();
     land_ir->op_type = OP_AND;
-    land_ir->left = std::unique_ptr<ValueIR>(ne_ir1);
-    land_ir->right = std::unique_ptr<ValueIR>(ne_ir2);
+    land_ir->left = ne_ir1;
+    land_ir->right = ne_ir2;
     land_ir->name = GetTmp();
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(land_ir));
     return land_ir;
@@ -222,27 +216,21 @@ ValueIR* IRGenerateVisitor::Visit(LOrExp* ast) {
   if (ast->lor_exp) {
     BinaryOpInstrIR* lor_ir = new BinaryOpInstrIR();
     lor_ir->op_type = OP_OR;
-    // lor_ir->left =
-    // std::unique_ptr<ValueIR>(Visit((LOrExp*)ast->lor_exp.get()));
-    auto vi = new IntegerValueIR();
-    vi->number = 3;
-    lor_ir->left = std::unique_ptr<ValueIR>(vi);
-    lor_ir->right =
-        std::unique_ptr<ValueIR>(Visit((LAndExp*)ast->land_exp.get()));
+    lor_ir->left = Visit((LOrExp*)ast->lor_exp.get());
+    lor_ir->right = Visit((LAndExp*)ast->land_exp.get());
     lor_ir->name = GetTmp();
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(lor_ir));
 
     BinaryOpInstrIR* ne_ir = new BinaryOpInstrIR();
     auto zero = new IntegerValueIR();
     zero->number = 0;
-
-    ne_ir->left = std::unique_ptr<ValueIR>(zero);
-    ne_ir->right = std::unique_ptr<ValueIR>(lor_ir);
+    curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(zero));
+    ne_ir->left = zero;
+    ne_ir->right = lor_ir;
     ne_ir->name = GetTmp();
     ne_ir->op_type = OP_NEQ;
     curr_basic_block->values.push_back(std::unique_ptr<ValueIR>(ne_ir));
     return ne_ir;
-
   } else {
     return Visit((LAndExp*)ast->land_exp.get());
   }
