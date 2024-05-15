@@ -38,3 +38,4 @@ void CodeGenVisitor::Visit(const ReturnValueIR* return_value) {
   out_file << "  li a0, " << ret_value << std::endl;
   out_file << "  ret" << std::endl;
 }
+void CodeGenVisitor::Visit(const IntegerValueIR* integer_value) {}
