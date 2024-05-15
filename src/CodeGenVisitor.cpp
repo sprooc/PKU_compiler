@@ -2,6 +2,9 @@
 
 #include "IR.h"
 
+
+// TODO : fix memory leak
+
 void CodeGenVisitor::Visit(ProgramIR* program) {
   for (auto& function : program->functions) {
     out_file << "  .text" << std::endl;
@@ -37,9 +40,15 @@ void CodeGenVisitor::Visit(ValueIR* value) {
   }
 }
 void CodeGenVisitor::Visit(ReturnValueIR* return_value) {
-  int reg = ((ValueIR*)(return_value->ret_value.get()))->reg;
-  // leak
-  OutCode(new std::string("mv"), new std::string("a0"), reg_alloc.GetName(reg));
+  if (return_value->ret_value->tag == IRV_INTEGER) {
+    OutCode(new std::string("li"), new std::string("a0"),
+            ((IntegerValueIR*)return_value->ret_value.get())->number);
+  } else {
+    int reg = ((ValueIR*)(return_value->ret_value.get()))->reg;
+    // leak
+    OutCode(new std::string("mv"), new std::string("a0"),
+            reg_alloc.GetName(reg));
+  }
   OutCode(new std::string("ret"));
 }
 void CodeGenVisitor::Visit(IntegerValueIR* integer_value) {
@@ -61,8 +70,7 @@ void CodeGenVisitor::Visit(BinaryOpInstrIR* binary_op_instr) {
   }
   int lr = binary_op_instr->left->reg;
   int rr = binary_op_instr->right->reg;
-  int dr = reg_alloc.GetOne();
-  int tr;
+  int dr = lr != 0 ? lr : (rr != 0 ? rr : reg_alloc.GetOne());
   binary_op_instr->reg = dr;
   switch (binary_op_instr->op_type) {
     case OP_ADD:
@@ -87,18 +95,16 @@ void CodeGenVisitor::Visit(BinaryOpInstrIR* binary_op_instr) {
               reg_alloc.GetName(lr), reg_alloc.GetName(rr));
       break;
     case OP_EQU:
-      tr = (lr != 0 ? lr : (rr != 0 ? rr : reg_alloc.GetOne()));
-      OutCode(new std::string("xor"), reg_alloc.GetName(tr),
+      OutCode(new std::string("xor"), reg_alloc.GetName(dr),
               reg_alloc.GetName(lr), reg_alloc.GetName(rr));
       OutCode(new std::string("seqz"), reg_alloc.GetName(dr),
-              reg_alloc.GetName(tr));
+              reg_alloc.GetName(dr));
       break;
     case OP_NEQ:
-      tr = (lr != 0 ? lr : (rr != 0 ? rr : reg_alloc.GetOne()));
-      OutCode(new std::string("xor"), reg_alloc.GetName(tr),
+      OutCode(new std::string("xor"), reg_alloc.GetName(dr),
               reg_alloc.GetName(lr), reg_alloc.GetName(rr));
       OutCode(new std::string("snez"), reg_alloc.GetName(dr),
-              reg_alloc.GetName(tr));
+              reg_alloc.GetName(dr));
       break;
     case OP_LT:
       OutCode(new std::string("slt"), reg_alloc.GetName(dr),
@@ -109,18 +115,16 @@ void CodeGenVisitor::Visit(BinaryOpInstrIR* binary_op_instr) {
               reg_alloc.GetName(lr), reg_alloc.GetName(rr));
       break;
     case OP_LE:
-      tr = (lr != 0 ? lr : (rr != 0 ? rr : reg_alloc.GetOne()));
-      OutCode(new std::string("sgt"), reg_alloc.GetName(tr),
+      OutCode(new std::string("sgt"), reg_alloc.GetName(dr),
               reg_alloc.GetName(lr), reg_alloc.GetName(rr));
       OutCode(new std::string("seqz"), reg_alloc.GetName(dr),
-              reg_alloc.GetName(tr));
+              reg_alloc.GetName(dr));
       break;
     case OP_GE:
-      tr = (lr != 0 ? lr : (rr != 0 ? rr : reg_alloc.GetOne()));
-      OutCode(new std::string("slt"), reg_alloc.GetName(tr),
+      OutCode(new std::string("slt"), reg_alloc.GetName(dr),
               reg_alloc.GetName(lr), reg_alloc.GetName(rr));
       OutCode(new std::string("seqz"), reg_alloc.GetName(dr),
-              reg_alloc.GetName(tr));
+              reg_alloc.GetName(dr));
       break;
     case OP_OR:
       OutCode(new std::string("or"), reg_alloc.GetName(dr),

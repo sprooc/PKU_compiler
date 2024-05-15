@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
   auto input = argv[2];
   auto output = argv[4];
   out_file.open(output);
-  
+
   // std::ifstream file(input);
   // std::string line;
   // int i = 0;
