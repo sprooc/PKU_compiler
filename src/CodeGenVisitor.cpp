@@ -4,12 +4,12 @@
 
 void CodeGenVisitor::Visit(const ProgramIR* program) {
   for (auto& function : program->functions) {
-    out_file << "  .test" << std::endl;
+    out_file << "  .text" << std::endl;
     Visit((FunctionIR*)function.get());
   }
 }
 void CodeGenVisitor::Visit(const FunctionIR* function) {
-  out_file << " .global " << function->name << std::endl;
+  out_file << "  .global " << function->name << std::endl;
   out_file << function->name << ":" << std::endl;
   for (auto& bb : function->basic_blocks) {
     Visit((BasicBlockIR*)bb.get());
