@@ -1,0 +1,13 @@
+# Target labels
+ utfcpp
+# Source files and their labels
+/home/sprooc/pku-compiler/an/build/runtime/CMakeFiles/utfcpp
+/home/sprooc/pku-compiler/an/build/runtime/CMakeFiles/utfcpp.rule
+/home/sprooc/pku-compiler/an/build/runtime/CMakeFiles/utfcpp-complete.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-build.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-configure.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-download.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-install.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-mkdir.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-patch.rule
+/home/sprooc/pku-compiler/an/build/runtime/utfcpp-prefix/src/utfcpp-stamp/utfcpp-test.rule

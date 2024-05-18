@@ -30,7 +30,7 @@ using namespace std;
 }
 
 
-%token INT RETURN LT GT LE GE EQ NEQ AND OR
+%token INT RETURN CONST LT GT LE GE EQ NEQ AND OR 
 %token <str_val> IDENT 
 %token <int_val> INT_CONST
 
@@ -277,6 +277,17 @@ LAndOp
 LOrOp
   : OR { $$ = new string("||"); }
   ;
+
+Decl
+  : ConstDecl {
+    auto ast = new Decl();
+    ast->const_decl = unique_ptr<BaseAST>($1);
+    $$ = ast;
+  }
+  ;
+
+ConstDecl
+  : CONST BType ConstDef
 
 
 

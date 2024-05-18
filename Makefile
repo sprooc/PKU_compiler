@@ -11,8 +11,8 @@ FB_EXT := .cpp
 endif
 
 # Flags
-CFLAGS := -Wall -std=c11
-CXXFLAGS := -Wall -Wno-register -std=c++17
+CFLAGS := -Wall -std=c11 
+CXXFLAGS := -Wall -Wno-register -std=c++17 
 FFLAGS :=
 BFLAGS := -d
 LDFLAGS :=
@@ -96,7 +96,7 @@ $(BUILD_DIR)/%.tab$(FB_EXT): $(SRC_DIR)/%.y
 
 start:
 	sudo docker start a226925f0224
-	
+
 docker:
 	sudo docker exec -it a226925f0224 bash
 

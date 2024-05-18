@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 class BaseAST {
  public:
@@ -40,17 +41,6 @@ class FuncType : public BaseAST {
   void Dump() const override { std::cout << "FuncType { INT }"; }
 };
 
-class Block : public BaseAST {
- public:
-  std::unique_ptr<BaseAST> stmt;
-
-  void Dump() const override {
-    std::cout << "Block { ";
-    stmt->Dump();
-    std::cout << " }";
-  }
-};
-
 class Stmt : public BaseAST {
  public:
   std::unique_ptr<BaseAST> exp;
@@ -82,11 +72,6 @@ class AddExp : public BaseAST {
   std::string op;
 };
 
-class PrimaryExp : public BaseAST {
- public:
-  std::unique_ptr<BaseAST> exp;
-  std::unique_ptr<BaseAST> number;
-};
 
 class UnaryExp : public BaseAST {
  public:
@@ -133,4 +118,48 @@ class LOrExp : public BaseAST {
   std::unique_ptr<BaseAST> land_exp;
   std::unique_ptr<BaseAST> lor_exp;
   std::string op;
+};
+
+class Decl : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> const_decl;
+};
+
+class ConstDecl : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> b_type;
+  std::vector<std::unique_ptr<BaseAST>> const_def;
+};
+
+class ConstInitVal : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> const_exp;
+};
+
+class Block : public BaseAST {
+ public:
+  std::vector<std::unique_ptr<BaseAST>> block_item;
+};
+
+class BlockInte : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> decl;
+  std::unique_ptr<BaseAST> stmt;
+};
+
+class LVal : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> ident;
+};
+
+class PrimaryExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> exp;
+  std::unique_ptr<BaseAST> lval;
+  std::unique_ptr<BaseAST> number;
+};
+
+class ConstExp : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> exp;
 };
