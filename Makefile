@@ -126,3 +126,6 @@ riscv:
 	clang hello.S -c -o hello.o -target riscv32-unknown-linux-elf -march=rv32im -mabi=ilp32
 	ld.lld hello.o -o hello
 	qemu-riscv32-static hello
+
+antlr:
+	antlr4 -Dlanguage=Cpp SysYLexer.g4 SysYParser.g4 -visitor
